@@ -30,9 +30,10 @@
   </section>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import axios from "axios";
-import { Button, Field, CellGroup } from "vant";
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import axios from 'axios';
+import { Button, Field, CellGroup } from 'vant';
+import * as api from '../../api/index';
 interface TformData {
   account: string;
   password: string;
@@ -50,15 +51,17 @@ export default class SignIn extends Vue {
     return this.value;
   }
   private set useComponent(val) {
-    this.$emit("input", val);
+    this.$emit('input', val);
   }
   private formData: TformData = {
-    account: "",
-    password: ""
+    account: '',
+    password: ''
   };
 
   public mounted() {
-    console.log(this.value);
+    api.getUserList().then((res) => {
+      console.log(res);
+    });
   }
 
   private onUseComponent(val: string) {

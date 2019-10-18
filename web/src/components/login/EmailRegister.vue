@@ -39,7 +39,7 @@
         class="sign_btn"
         type="info"
         text="立即注册"
-        loading-text="登录中..."
+        loading-text="注册中..."
       />
     </div>
     <van-button class="helper-item left" @click="onUseComponent('sign')" text="返回登录"></van-button>
@@ -121,7 +121,6 @@ export default class SignIn extends Vue {
     }
     if (!regTips.email && !regTips.password && !regTips.passwordReg) {
       this.isLoad = true;
-      console.log(123);
     }
   }
 }

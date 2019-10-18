@@ -1,5 +1,6 @@
 import http from "./axios";
 
-export function getUserList() {
-  return http('get', 'http://localhost:3000/web/api/user/getList');
+/** 获取用户列表 */
+export function getUserList(prams?: any) {
+  return http('get', '/api/user/getList', prams, true);
 }

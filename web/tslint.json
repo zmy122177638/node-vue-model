@@ -17,6 +17,7 @@
     "quotemark": false,
     "no-console": false,
     "eqeqeq": false,
-    "trailing-comma": [0, "ignore"]
+    "trailing-comma": [0, "ignore"],
+    "arrow-parens": 0
   }
 }

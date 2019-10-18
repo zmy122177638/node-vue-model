@@ -1,5 +1,5 @@
 import axios from "axios";
-// import qs from "qs";
+import qs from "qs";
 import { Toast } from "vant";
 
 // 状态码错误信息
@@ -26,17 +26,11 @@ let vanToast: any = null;
 // 发起请求前
 axios.interceptors.request.use(
   (config: any) => {
-    if (config.LOADINGHIDE) {
-      vanToast = Toast.loading({
-        duration: 0, // 持续展示 toast
-        forbidClick: true, // 禁用背景点击
-        message: "加载中..."
-      });
+    // 使用express.json()情况下,可以不需要qs转换
+    // 使用express.urlencoded()情况下,必须qs转换
+    if (config.method.toUpperCase() !== "GET") {
+      config.data = qs.stringify(config.data);
     }
-    // qs转换
-    // if (config.method.toUpperCase() !== "GET") {
-    //   config.data = qs.stringify(config.data);
-    // }
     return config;
   },
   (error: any) => {
@@ -49,44 +43,68 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (res: any) => {
     if (vanToast) { vanToast.clear(); }
-    return res;
+    const { success, payload, error } = res.data;
+    if (!success) {
+      setTimeout(() => {
+        Toast({
+          message: `${error && error.message || '服务器繁忙'}`,
+          duration: 2000
+        });
+      });
+      return Promise.reject(error);
+    }
+    return payload;
   },
   (error: any) => {
     if (vanToast) { vanToast.clear(); }
     if (error) {
       // 请求配置发生的错误
       if (!error.response) {
-        return console.log("Error", error.message);
+        return console.error("Error", error.message);
       }
       // 获取状态码
       const status = error.response.status;
       const errorText = codeMessage[status] || error.response.statusText;
       console.log(status);
       // 提示错误信息
-      Toast.fail(errorText);
+      setTimeout(() => {
+        Toast.fail(errorText);
+      });
     }
     return Promise.reject(error);
   }
 );
 
-export default function http(method: string, url: string, params?: any, config?: any) {
+interface Tconfig {
+  /** 是否显示加载Toast */
+  ISLOADSHOW?: boolean;
+  [propName: string]: any;
+
+}
+
+/**
+ *
+ * @param method 请求方法 GET POST PUT...
+ * @param url 请求地址
+ * @param params 请求参数
+ * @param isloadShow 是否展示加载中...
+ * @param config 合并axios配置
+ */
+export default function http(method: string, url: string, params?: any, isloadShow?: boolean, config?: any) {
   return new Promise((resolve, reject) => {
     if (typeof params !== "object") { params = {}; }
-    const option = Object.assign(
+    const option: any = Object.assign(
       {
         method,
         url,
-        timeout: 30000,
-        headers: null,
-        withCredentials: false // 是否携带cookies发起请求
+        timeout: 10000,
+        headers: {},
+        withCredentials: true // 是否携带cookies发起请求
       },
-      config
+      config,
     );
     // 添加token
-    option.headers = {
-      ...option.headers,
-      authorization: "Bearer " + "token"
-    };
+    option.headers.authorization = "auth " + "anles";
     // 处理get、post传参问题
     method.toUpperCase() !== "GET"
       ? (option.data = {
@@ -95,20 +113,22 @@ export default function http(method: string, url: string, params?: any, config?:
       : (option.params = {
         ...params
       });
-
+    /** 展示加载 */
+    if (isloadShow) {
+      vanToast = Toast.loading({
+        duration: 0, // 持续展示 toast
+        forbidClick: true, // 禁用背景点击
+        message: "加载中..."
+      });
+    }
     // 请求成功后服务器返回二次处理
-    axios.request(option).then(
-      (res: any) => {
-        resolve(res.data.payload);
-      },
-      (error: any) => {
-        if (error.response) {
-          reject(error.response.data);
-        } else {
-          reject(error);
-        }
-      }
-    );
+    axios.request(option).then((payload: any) => {
+      if (vanToast) { vanToast.clear(); }
+      resolve(payload);
+    }).catch((error: any) => {
+      if (vanToast) { vanToast.clear(); }
+      reject(error);
+    });
   });
 }
 
