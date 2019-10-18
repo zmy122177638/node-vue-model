@@ -1,0 +1,66 @@
+.form-sec {
+  width: 90%;
+  box-sizing: border-box;
+  min-height: 150px;
+  background: rgba(46, 145, 236, 0.5);
+  border-radius: 7px;
+  padding: 15px 10px 70px;
+  position: relative;
+  .form-title {
+    font-size: 18px;
+    color: rgb(240, 157, 101);
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+  }
+  .form-submit {
+    margin-top: 20px;
+    text-align: center;
+  }
+  .sign_btn {
+    background: linear-gradient(
+      rgba(46, 145, 236),
+      rgb(5, 110, 151)
+    ) !important;
+    border-radius: 2px;
+    width: 55%;
+  }
+  .helper-item {
+    position: absolute;
+    width: 25%;
+    height: 35px;
+    line-height: 35px;
+    box-sizing: border-box;
+    font-size: 13px;
+    bottom: 20px;
+    color: rgb(194, 192, 192);
+    background-color: rgba(8, 77, 109, 0.7);
+    border: none;
+    &.left {
+      left: 0;
+      border-radius: 0 15px 15px 0;
+      padding-left: 10px;
+    }
+    &.center{
+      left:50%;
+      transform: translateX(-50%);
+    }
+    &.right {
+      right: 0;
+      padding-right: 10px;
+      text-align: right;
+      border-radius: 15px 0px 0px 15px;
+    }
+  }
+  .helper-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .helper-item {
+      font-size: 14px;
+      color: rgb(21, 57, 177);
+      text-decoration: underline;
+    }
+  }
+}
