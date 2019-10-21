@@ -22,7 +22,14 @@
       />
     </van-cell-group>
     <div class="form-submit">
-      <van-button :loading="false" class="sign_btn" type="info" text="登录" loading-text="登录中..." />
+      <van-button
+        :loading="isLoad"
+        @click="onSubmitFormData()"
+        class="sign_btn"
+        type="info"
+        text="登录"
+        loading-text="登录中..."
+      />
     </div>
     <van-button class="helper-item left" @click="onUseComponent('modify')" text="修改密码"></van-button>
     <van-button class="helper-item center" @click="onUseComponent('email')" text="注册账号"></van-button>
@@ -37,6 +44,7 @@ import * as api from '../../api/index';
 interface TformData {
   account: string;
   password: string;
+  regTips: any;
 }
 @Component({
   components: {
@@ -53,19 +61,33 @@ export default class SignIn extends Vue {
   private set useComponent(val) {
     this.$emit('input', val);
   }
+  private isLoad: boolean = false;
   private formData: TformData = {
     account: '',
-    password: ''
+    password: '',
+    regTips: {
+      account: '',
+      password: ''
+    }
   };
-
-  public mounted() {
-    api.getUserList().then((res) => {
-      console.log(res);
-    });
-  }
 
   private onUseComponent(val: string) {
     this.useComponent = val;
+  }
+
+  private onSubmitFormData() {
+    const { account, password, regTips } = this.formData;
+    if (!account) {
+      regTips.account = '账号不能为空';
+      return;
+    } else if (!password) {
+      regTips.password = '密码不能为空';
+      return;
+    }
+    api.accountSign({ account, password }).then(() => {
+      this.$toast('登录成功');
+      this.$router.push({ name: 'Home' });
+    });
   }
 }
 </script>

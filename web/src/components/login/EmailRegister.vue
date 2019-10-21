@@ -84,13 +84,6 @@ export default class SignIn extends Vue {
   };
   private isLoad: boolean = false;
 
-  public mounted() {
-    console.log(this.value);
-    api.getUserList().then((res) => {
-      console.log(res);
-    });
-  }
-
   private onUseComponent(val: string) {
     this.useComponent = val;
   }
@@ -121,6 +114,24 @@ export default class SignIn extends Vue {
     }
     if (!regTips.email && !regTips.password && !regTips.passwordReg) {
       this.isLoad = true;
+      api
+        .addUserItem({ email, password })
+        .then((res) => {
+          this.$toast('注册成功');
+          this.formData = {
+            email: '',
+            password: '',
+            passwordReg: '',
+            regTips: {
+              email: '',
+              password: '',
+              passwordReg: ''
+            }
+          };
+        })
+        .finally(() => {
+          this.isLoad = false;
+        });
     }
   }
 }
