@@ -16,7 +16,7 @@ router.get('/login', (req, res, next) => {
   } else if(emailReg.test(account)){
     params = { email: account, password}
   } else {
-    next({statusCode: 200, message: '账号格式错误'})
+    next({code: 200, message: '账号格式错误'})
     return;
   }
   sql_user.queryUser(params).then((data) => {
@@ -26,7 +26,7 @@ router.get('/login', (req, res, next) => {
         payload: data[0]
       })
     } else {
-      next({statusCode: 200, message: '账号不存在'})
+      next({code: 200, message: '账号不存在'})
     }
   }).catch((err) => {
     next(err)
@@ -67,7 +67,7 @@ router.post('/addUser', (req, res, next) => {
 router.post('/delUser', (req, res, next) => {
   if (!req.body.uid) {
     next({
-      statusCode: 200,
+      code: 200,
       message: 'uid不能为空'
     })
   }
@@ -80,7 +80,7 @@ router.post('/delUser', (req, res, next) => {
       })
     } else {
       next({
-        statusCode: 200,
+        code: 200,
         message: '删除失败,没有找到此用户'
       })
     }

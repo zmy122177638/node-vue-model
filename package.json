@@ -1,0 +1,26 @@
+{
+  "name": "node-vue-todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "npm run serve --prefix app",
+    "server": "npm run serve --prefix server",
+    "start": "concurrently \"npm run client\" \"npm run server\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/122177638/node-vue-model.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/122177638/node-vue-model/issues"
+  },
+  "homepage": "https://github.com/122177638/node-vue-model#readme",
+  "devDependencies": {
+    "concurrently": "^5.0.2"
+  }
+}

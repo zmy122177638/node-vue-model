@@ -38,7 +38,7 @@ class UserTable {
     return new Promise((resolve, reject) => {
       if(!!queryRes.length){
         reject({
-          statusCode: 200,
+          code: 200,
           code: 1062,
           message: `该${title}已存在`
         })

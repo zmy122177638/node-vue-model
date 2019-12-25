@@ -10,7 +10,7 @@ module.exports = (app) => {
 
   // 错误处理函数
   app.use((error, req, res, next) => {
-    res.status(error.statusCode || 500).send({
+    res.status(error.code || 500).send({
       error,
       success: false
     })
