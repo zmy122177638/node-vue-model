@@ -15,6 +15,7 @@
         v-model="formData.password"
         left-icon="lock"
         clearable
+        type="password"
         label-width="50"
         label="密码"
         placeholder="请输入登录密码"

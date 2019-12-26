@@ -1,13 +1,13 @@
-const express = require('express');
-const router = express();
-const sql_user = require('../plugins/mysql/user.js')
+const Router = require('koa-router');
+const router = new Router({ prefix: '/user'})
+const SQLUser = require('../plugins/mysql/user.js')
 
 /**
  * 账号登录
  */
-router.get('/login', (req, res, next) => {
-  const account = req.query.account;
-  const password = req.query.password;
+router.get('/login', async(ctx, next) => {
+  const account = ctx.query.account;
+  const password = ctx.query.password;
   const phoneReg = /^1[3456789][0-9]{9}$/
   const emailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
   let params = {}
@@ -16,28 +16,24 @@ router.get('/login', (req, res, next) => {
   } else if(emailReg.test(account)){
     params = { email: account, password}
   } else {
-    next({code: 200, message: '账号格式错误'})
-    return;
+    ctx.throw(400, '账号格式错误')
   }
-  sql_user.queryUser(params).then((data) => {
-    if(Array.isArray(data) && !!data.length){
-      res.send({
-        success: true,
-        payload: data[0]
-      })
-    } else {
-      next({code: 200, message: '账号不存在'})
+  const result = await SQLUser.queryUser(params)
+  if(Array.isArray(result) && !!result.length){
+    ctx.body = {
+      success: true,
+      payload: result[0]
     }
-  }).catch((err) => {
-    next(err)
-  })
+  } else {
+    ctx.throw(400, '账号不存在')
+  }
 })
 
 /**
  *  获取用户列表
  */
-router.get('/getList', (req, res, next) => {
-  sql_user.getUserList().then(data => {
+router.get('/getList', ({ req, res }, next) => {
+  SQLUser.getUserList().then(data => {
     res.send({
       success: true,
       payload: data
@@ -48,45 +44,21 @@ router.get('/getList', (req, res, next) => {
 })
 
 /**
- *  新增用户
+ *  注册
  */
-router.post('/addUser', (req, res, next) => {
-  sql_user.addUser(req.body).then(data => {
-    res.send({
-      success: true,
-      payload: data
-    })
-  }).catch((err) => {
-    next(err)
-  })
-})
-
-/**
- *  删除用户
- */
-router.post('/delUser', (req, res, next) => {
-  if (!req.body.uid) {
-    next({
-      code: 200,
-      message: 'uid不能为空'
-    })
-  }
-  sql_user.delUser(req.body).then(data => {
-    console.log(data.affectedRows);
-    if (data.affectedRows > 0) {
-      res.send({
-        success: true,
-        payload: data
-      })
-    } else {
-      next({
-        code: 200,
-        message: '删除失败,没有找到此用户'
-      })
+router.post('/register', async(ctx, next) => {
+  const queryUser = await SQLUser.queryUser(ctx.request.body)
+  if(Array.isArray(queryUser) && !!queryUser.length) {
+    const title = ctx.request.body.phone ? '手机号' : '邮箱'
+    ctx.throw(400, `该${title}已注册`)
+  } else {
+    await SQLUser.addUser(ctx.request.body)
+    ctx.body = {
+      payload: [],
+      success: true
     }
-  }).catch((err) => {
-    next(err)
-  })
+  }
 })
+
 
 module.exports = router

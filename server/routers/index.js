@@ -1,18 +1,20 @@
 module.exports = (app) => {
-  const express = require('express');
-  const setHttpHeader = require('../middleware/setHttpHeader.js')
+  const setHttpHeaders = require('../middleware/setHttpHeaders.js')
+  const handleAllErrors = require('../middleware/handleAllErrors.js')
+  const bodyParser = require('koa-bodyparser')
+  const Router = require('koa-router')
+  const router = new Router()
+  /** 子路由 */
+  const user = require('./user.js')
 
-  /** 添加路由中间件 */
-  app.use(express.json())
-  app.use(express.urlencoded({ extended: true }))
-  app.use(setHttpHeader())
-  app.use('/v1/web/api/user', require('./user.js'))
+  // /** 添加路由中间件 */
+  app.use(setHttpHeaders())
+  app.use(handleAllErrors())
+  app.use(bodyParser())
+  
+  /** 合并路由 */
+  router.use('/zxd/zh/v1/api', user.routes())
 
-  // 错误处理函数
-  app.use((error, req, res, next) => {
-    res.status(error.code || 500).send({
-      error,
-      success: false
-    })
-  })
+  /** 注册路由 */
+  app.use(router.routes())
 }

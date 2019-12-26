@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "nodemon ./index.js",
+    "serve": "cnpm install && nodemon ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "anles",
@@ -13,9 +13,14 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "inflection": "^1.12.0",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
     "mysql": "^2.17.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.7",
     "nodemon": "^1.19.3"
   }
 }

@@ -21,29 +21,16 @@ class UserTable {
    * @param {String} password 账户密码
    * @return: Promise
    */
-  async addUser(params) {
-    let sql, query, title;
+   addUser(params) {
+    let sql;
     if (params.email) {
       /** 邮箱注册 */
       sql = `INSERT INTO user(email,password) VALUES('${params.email}','${params.password}')`
-      query = { email: params.email }
-      title = '邮箱'
     } else if(params.phone){
       /** 手机注册 */
       sql = `INSERT INTO user(phone,password) VALUES('${params.phone}','${params.password}')`
-      query = { phone: params.phone }
-      title = '手机号'
     }
-    const queryRes = await this.queryUser(query);
     return new Promise((resolve, reject) => {
-      if(!!queryRes.length){
-        reject({
-          code: 200,
-          code: 1062,
-          message: `该${title}已存在`
-        })
-        return
-      }
       $mysql.query(sql, (err, result) => {
         if (err) reject(err);
         resolve(result)

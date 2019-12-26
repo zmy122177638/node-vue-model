@@ -10,7 +10,7 @@ module.exports = {
   devServer: {
     proxy: {
       "/api": {
-        target: "http://localhost:3306/v1/web/api",
+        target: "http://localhost:3300/zxd/zh/v1/api",
         pathRewrite: {
           "^/api": ""
         }

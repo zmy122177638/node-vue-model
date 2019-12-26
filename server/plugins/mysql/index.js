@@ -1,12 +1,11 @@
 const mysql = require('mysql');
+const config = require('../../config.js')
+const $mysql = mysql.createConnection(config.mysql)
 
-const $mysql = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '123456',
-  database: 'mydb'
-})
-
-$mysql.connect();
+$mysql.connect((err) => {
+  if (err) {
+    console.log('MYSQL SERVER ERROR: ' + err.message)
+  }
+});
 
 module.exports = $mysql;
