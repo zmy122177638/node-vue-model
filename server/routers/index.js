@@ -17,4 +17,5 @@ module.exports = (app) => {
 
   /** 注册路由 */
   app.use(router.routes())
+  app.use(router.allowedMethods());
 }
