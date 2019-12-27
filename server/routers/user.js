@@ -5,42 +5,33 @@ const SQLUser = require('../plugins/mysql/user.js')
 /**
  * 账号登录
  */
-router.get('/login', async(ctx, next) => {
-  const account = ctx.query.account;
-  const password = ctx.query.password;
+router.post('/login', async(ctx, next) => {
+  const account = ctx.request.body.account;
+  const password = ctx.request.body.password;
   const phoneReg = /^1[3456789][0-9]{9}$/
   const emailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
   let params = {}
-  if(phoneReg.test(account)){
-    params = { phone: account, password}
+  if (phoneReg.test(account)) {
+    params = { phone: account }
   } else if(emailReg.test(account)){
-    params = { email: account, password}
+    params = { email: account }
   } else {
     ctx.throw(400, '账号格式错误')
   }
   const result = await SQLUser.queryUser(params)
   if(Array.isArray(result) && !!result.length){
-    ctx.body = {
-      success: true,
-      payload: result[0]
+    const loginInfo = result[0]
+    if(loginInfo.password === password) {
+      ctx.body = {
+        success: true,
+        payload: loginInfo
+      }
+    } else {
+      ctx.throw(400, '登录密码错误')
     }
   } else {
     ctx.throw(400, '账号不存在')
   }
-})
-
-/**
- *  获取用户列表
- */
-router.get('/getList', ({ req, res }, next) => {
-  SQLUser.getUserList().then(data => {
-    res.send({
-      success: true,
-      payload: data
-    })
-  }).catch((err) => {
-    next(err)
-  })
 })
 
 /**

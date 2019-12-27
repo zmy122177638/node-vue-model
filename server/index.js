@@ -4,6 +4,10 @@ const static = require('koa-static')
 const router = require('./routers/index.js')
 const config = require('./config.js')
 const path = require('path')
+const { createAllTables } = require('./plugins/mysql/index.js')
+
+/** 初始化表 */
+createAllTables()
 
 /** 设置静态资源服务 */
 app.use(static(path.join(__dirname,config.staticPath)))
