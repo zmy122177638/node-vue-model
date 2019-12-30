@@ -56,7 +56,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import * as api from "../../api/index";
+import api from "../../api/index";
 import { Button, Field, CellGroup } from "vant";
 interface TformData {
   phone: string;

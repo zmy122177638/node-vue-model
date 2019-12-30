@@ -52,7 +52,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Button, Field, CellGroup } from "vant";
-import * as api from "../../api/index";
+import api from "../../api/index";
 interface TformData {
   account: string;
   password: string;

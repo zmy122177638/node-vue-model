@@ -5,7 +5,7 @@ module.exports = () => {
     ctx.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
     ctx.set("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     ctx.set("Content-Type", "application/json;charset=utf-8");
-    ctx.set("X-Powered-By", "4.17.1")
+    ctx.set("X-Powered-By", "2.11.0")
     await next()
   }
 }

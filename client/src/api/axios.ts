@@ -1,5 +1,4 @@
-import axios from "axios";
-import qs from "qs";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError, AxiosInstance } from "axios";
 import { Toast } from "vant";
 
 // 状态码错误信息
@@ -20,33 +19,56 @@ const codeMessage: any = {
   503: "服务不可用，服务器暂时过载或维护。",
   504: "网关超时。"
 };
+// const CancelToken = axios.CancelToken
+// let axiosCancelPromiseMap: Map<any, any> = new Map()
+const request: AxiosInstance = axios.create({
+  timeout: 10000,
+  withCredentials: true,
+})
 
-let vanToast: any = null;
+/** 设置公共参数 */
+function setPublicParams(config: AxiosRequestConfig) {
+  let { method, data, params } = config
+  if (!data) data = {}
+  if (!params) params = {}
+  if (String(method).toUpperCase() === 'GET') {
+    if (!params.orgId) {
+      config.params = { ...params, orgId: 100 }
+    }
+  } else {
+    if (Object.prototype.toString.call(data) === '[object FormData]') {
+      if (!data.get('orgId')) {
+        data.append('orgId', 100)
+      }
+    } else {
+      if (!data.orgId) {
+        config.data = { ...data, orgId: 100 }
+      }
+    }
+  }
+}
 
 // 发起请求前
-axios.interceptors.request.use(
-  (config: any) => {
-    // 使用express.json()情况下,可以不需要qs转换
-    // 使用express.urlencoded()情况下,必须qs转换
-    if (config.method.toUpperCase() !== "GET") {
-      config.data = qs.stringify(config.data);
-    }
+request.interceptors.request.use(
+  (config: AxiosRequestConfig) => {
+    setPublicParams(config);
+    // const cancelMethod = axiosCancelPromiseMap.get(config.url)
+    // if (cancelMethod) {
+    //   cancelMethod("repeat request")
+    //   axiosCancelPromiseMap.delete(config.url)
+    // }
+    // config.cancelToken = new CancelToken(function executor(cancelMethod: Function) {
+    //   axiosCancelPromiseMap.set(config.url, cancelMethod)
+    // })
     return config;
   },
-  (error: any) => {
-    Toast.fail("加载超时");
-    if (vanToast) {
-      vanToast.clear();
-    }
+  (error: AxiosError) => {
     return Promise.reject(error);
   }
 );
 // 发起请求后
-axios.interceptors.response.use(
-  (res: any) => {
-    if (vanToast) {
-      vanToast.clear();
-    }
+request.interceptors.response.use(
+  (res: AxiosResponse) => {
     const { success, payload, error } = res.data;
     if (!success) {
       setTimeout(() => {
@@ -59,10 +81,7 @@ axios.interceptors.response.use(
     }
     return payload;
   },
-  (error: any) => {
-    if (vanToast) {
-      vanToast.clear();
-    }
+  (error: AxiosError) => {
     if (error) {
       // 请求配置发生的错误
       if (!error.response) {
@@ -71,7 +90,7 @@ axios.interceptors.response.use(
       // 获取状态码
       const status = error.response.status;
       const errorText = codeMessage[status] || error.response.statusText;
-      console.log(status);
+
       // 提示错误信息
       setTimeout(() => {
         Toast.fail(errorText);
@@ -81,73 +100,4 @@ axios.interceptors.response.use(
   }
 );
 
-interface Tconfig {
-  /** 是否显示加载Toast */
-  ISLOADSHOW?: boolean;
-  [propName: string]: any;
-}
-
-/**
- *
- * @param method 请求方法 GET POST PUT...
- * @param url 请求地址
- * @param params 请求参数
- * @param isloadShow 是否展示加载中...
- * @param config 合并axios配置
- */
-export default function http(
-  method: string,
-  url: string,
-  params?: any,
-  isloadShow?: boolean,
-  config?: any
-) {
-  return new Promise((resolve, reject) => {
-    if (typeof params !== "object") {
-      params = {};
-    }
-    const option: any = Object.assign(
-      {
-        method,
-        url,
-        timeout: 10000,
-        headers: {},
-        withCredentials: true // 是否携带cookies发起请求
-      },
-      config
-    );
-    // 添加token
-    option.headers.authorization = "auth " + "anles";
-    // 处理get、post传参问题
-    method.toUpperCase() !== "GET"
-      ? (option.data = {
-          ...params
-        })
-      : (option.params = {
-          ...params
-        });
-    /** 展示加载 */
-    if (isloadShow) {
-      vanToast = Toast.loading({
-        duration: 0, // 持续展示 toast
-        forbidClick: true, // 禁用背景点击
-        message: "加载中..."
-      });
-    }
-    // 请求成功后服务器返回二次处理
-    axios
-      .request(option)
-      .then((payload: any) => {
-        if (vanToast) {
-          vanToast.clear();
-        }
-        resolve(payload);
-      })
-      .catch((error: any) => {
-        if (vanToast) {
-          vanToast.clear();
-        }
-        reject(error);
-      });
-  });
-}
+export default request;

@@ -7,7 +7,7 @@ module.exports = () => {
       if (error.status === 400) {
         ctx.body = {
           error: {
-            code: error.status,
+            code: error.code || error.status,
             message: error.message
           },
           success: false

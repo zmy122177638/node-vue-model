@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import api from "../api";
 @Component({})
 export default class Home extends Vue {}
 </script>

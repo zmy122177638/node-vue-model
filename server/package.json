@@ -14,7 +14,9 @@
     "inflection": "^1.12.0",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
+    "koa-mysql-session": "^0.0.2",
     "koa-router": "^7.4.0",
+    "koa-session-minimal": "^3.0.4",
     "koa-static": "^5.0.0",
     "mysql": "^2.17.1"
   },
