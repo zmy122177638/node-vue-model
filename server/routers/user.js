@@ -41,7 +41,6 @@ router.post('/login', async(ctx) => {
     const loginInfo = result[0]
     if(loginInfo.password === password) {
       ctx.session = {
-        isSet: true,
         id: loginInfo.id,
         userName: loginInfo.userName
       }
