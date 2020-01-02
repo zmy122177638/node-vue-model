@@ -3,6 +3,7 @@ import Router, { Route, RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import { AccountMoudule } from '@/store/modules/account';
 import { _deepIterator } from '@/common/utils';
+import api from '@/api';
 
 Vue.use(Router);
 
@@ -25,17 +26,7 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "Login" */ "../views/Login.vue"),
       meta: {
         isNotNeedLogin: true
-      },
-      children: [
-        {
-          path: "/login",
-          name: "wwwww",
-          component: () => import(/* webpackChunkName: "Login" */ "../views/Login.vue"),
-          meta: {
-            isNotNeedLogin: true
-          }
-        }
-      ]
+      }
     },
     {
       path: "/about",
@@ -55,7 +46,8 @@ router.beforeEach((to, from, next) => {
   if (AccountMoudule.isLogin || getNotNeedLoginRouteNames.some((routeName: string) => routeName === to.name)) {
     next()
   } else {
-    AccountMoudule.getUserInfo().then(() => {
+    api.getUserInfo().then((userInfo: any) => {
+      AccountMoudule.setUserInfo(userInfo)
       next()
     }).catch(() => {
       router.push({name: 'Login'})

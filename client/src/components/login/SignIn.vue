@@ -91,7 +91,7 @@ export default class SignIn extends Vue {
     }
     api.accountSign({ account, password }).then(() => {
       this.$toast("登录成功");
-      this.$router.push({ name: "Home" });
+      this.$router.replace({ name: "Home" });
     });
   }
 }

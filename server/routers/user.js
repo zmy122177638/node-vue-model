@@ -74,5 +74,14 @@ router.post('/register', async(ctx, next) => {
   }
 })
 
+/** 退出登录 */
+router.all('/logout', async(ctx, next) => {
+  ctx.session = {}
+  ctx.body = {
+    payload: [],
+    success: true
+  }
+})
+
 
 module.exports = router

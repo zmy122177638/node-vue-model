@@ -8,18 +8,16 @@ class Account extends VuexModule implements IAccountModule{
   public userInfo: UserInfo = new UserInfo()
   public isLogin: boolean = false
 
-  @Action
-  public async getUserInfo(){
-    const result = await (api.getUserInfo() as any as UserInfo)
-    this.setUserInfo(result)
+  @Mutation
+  public setUserInfo(userInfo: UserInfo){
+    this.userInfo = userInfo
+    this.isLogin = true
   }
 
   @Mutation
-  public setUserInfo(userInfo: UserInfo){
-    if (userInfo.id) {
-      this.userInfo = userInfo
-      this.isLogin = true
-    }
+  public logout(){
+    this.userInfo = new UserInfo()
+    this.isLogin = false
   }
 }
 interface IAccountModule {

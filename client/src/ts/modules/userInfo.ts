@@ -1,3 +1,3 @@
 export class UserInfo {
-  id: string|number = 0
+  id: string|null = null
 }

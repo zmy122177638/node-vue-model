@@ -26,3 +26,11 @@ export function getUserInfo(params = {}) {
     params
   })
 }
+
+/** 退出登录 */
+export function logout() {
+  return request({
+    url: 'api/user/logout',
+    method: 'post'
+  })
+}
