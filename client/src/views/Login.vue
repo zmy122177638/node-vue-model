@@ -2,23 +2,7 @@
   <section class="login">
     <div class="container">
       <transition name="login" mode="out-in">
-        <email-register
-          v-if="useComponent === 'email'"
-          v-model="useComponent"
-        ></email-register>
-        <phone-register
-          v-else-if="useComponent === 'phone'"
-          v-model="useComponent"
-        ></phone-register>
-        <modify-password
-          v-else-if="useComponent === 'modify'"
-          v-model="useComponent"
-        ></modify-password>
-        <reset-password
-          v-else-if="useComponent === 'reset'"
-          v-model="useComponent"
-        ></reset-password>
-        <sign-in v-else v-model="useComponent"></sign-in>
+        <component :is="useComponent" v-model="useComponent"></component>
       </transition>
     </div>
   </section>
@@ -34,11 +18,11 @@ import SignIn from "../components/login/SignIn.vue";
 
 @Component({
   components: {
-    SignIn,
-    EmailRegister,
-    PhoneRegister,
-    ResetPassword,
-    ModifyPassword
+    sign: SignIn,
+    email: EmailRegister,
+    phone: PhoneRegister,
+    reset: ResetPassword,
+    modify: ModifyPassword
   }
 })
 export default class Login extends Vue {

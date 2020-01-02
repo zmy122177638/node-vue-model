@@ -135,7 +135,6 @@ export default class PhoneRegister extends Vue {
               passwordReg: ""
             }
           };
-          console.log(res);
         })
         .finally(() => {
           this.isLoad = false;
@@ -145,5 +144,5 @@ export default class PhoneRegister extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-@import "../../common/css/login.scss";
+@import "../../assets/styles/login.scss";
 </style>

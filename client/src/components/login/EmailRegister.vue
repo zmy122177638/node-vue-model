@@ -144,5 +144,5 @@ export default class SignIn extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-@import "../../common/css/login.scss";
+@import "../../assets/styles/login.scss";
 </style>

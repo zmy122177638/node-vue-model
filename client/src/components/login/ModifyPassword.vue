@@ -65,15 +65,11 @@ export default class ModifyPassword extends Vue {
     password: ""
   };
 
-  public mounted() {
-    console.log(this.value);
-  }
-
   private onUseComponent(val: string) {
     this.useComponent = val;
   }
 }
 </script>
 <style lang="scss" scoped>
-@import "../../common/css/login.scss";
+@import "../../assets/styles/login.scss";
 </style>

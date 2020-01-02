@@ -1,4 +1,4 @@
-const { poolQuery, connectQuery } = require('./index')
+const { poolQuery, connectQuery } = require('../index')
 
 class UserTable {
   /**

@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const router = new Router({ prefix: '/user'})
-const SQLUser = require('../plugins/mysql/user.js')
-const { isQuerySuccess } = require('../utils/index.js')
+const SQLUser = require('../plugins/mysql/modules/user.js')
+const { isQuerySuccess } = require('../helper/utils.js')
 
 /** 获取用户信息 */
 router.get('/info', async (ctx) => {
@@ -13,6 +13,7 @@ router.get('/info', async (ctx) => {
         payload: result[0]
       }
     } else {
+      ctx.session = null
       ctx.throw(400,{code: 3002, message: '找不到用户'})
     }
   } else {
@@ -60,7 +61,7 @@ router.post('/login', async(ctx) => {
  *  注册
  */
 router.post('/register', async(ctx, next) => {
-  const queryUser = await SQLUser.queryUser(ctx.request.body)
+  const result = await SQLUser.queryUser(ctx.request.body)
   if(isQuerySuccess(result)) {
     const title = ctx.request.body.phone ? '手机号' : '邮箱'
     ctx.throw(400, `该${title}已注册`)

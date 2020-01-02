@@ -7,13 +7,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import api from "./api";
 @Component({})
-export default class App extends Vue {
-  public mounted() {
-    api.getUserInfo().then((res: any) => {
-      console.log(res);
-    });
-  }
-}
+export default class App extends Vue {}
 </script>
 <style lang="scss" scoped>
 #app {

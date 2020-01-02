@@ -1,7 +1,4 @@
-
-const errorMsg = {
-  3002: '权限不足'
-}
+const errorCodeMsg = require('../helper/errorCodeMsg.js')
 module.exports = () => {
   return async function(ctx,next){
     try {
@@ -11,7 +8,7 @@ module.exports = () => {
         ctx.body = {
           error: {
             code: error.code || error.status,
-            message: error.message || errorMsg[error.code]
+            message: error.message || errorCodeMsg[error.code]
           },
           success: false
         }

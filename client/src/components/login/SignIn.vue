@@ -9,7 +9,6 @@
         label-width="50"
         label="账号"
         placeholder="请输入登录账号"
-        error-message
       />
       <van-field
         v-model="formData.password"
@@ -19,7 +18,6 @@
         label-width="50"
         label="密码"
         placeholder="请输入登录密码"
-        error-message
       />
     </van-cell-group>
     <div class="form-submit">
@@ -56,7 +54,6 @@ import api from "../../api/index";
 interface TformData {
   account: string;
   password: string;
-  regTips: any;
 }
 @Component({
   components: {
@@ -76,11 +73,7 @@ export default class SignIn extends Vue {
   private isLoad: boolean = false;
   private formData: TformData = {
     account: "",
-    password: "",
-    regTips: {
-      account: "",
-      password: ""
-    }
+    password: ""
   };
 
   private onUseComponent(val: string) {
@@ -88,12 +81,12 @@ export default class SignIn extends Vue {
   }
 
   private onSubmitFormData() {
-    const { account, password, regTips } = this.formData;
+    const { account, password } = this.formData;
     if (!account) {
-      regTips.account = "账号不能为空";
+      this.$toast("账号不能为空");
       return;
     } else if (!password) {
-      regTips.password = "密码不能为空";
+      this.$toast("密码不能为空");
       return;
     }
     api.accountSign({ account, password }).then(() => {
@@ -104,5 +97,5 @@ export default class SignIn extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-@import "../../common/css/login.scss";
+@import "../../assets/styles/login.scss";
 </style>
