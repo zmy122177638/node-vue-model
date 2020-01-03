@@ -22,9 +22,5 @@
   "homepage": "https://github.com/122177638/node-vue-model#readme",
   "devDependencies": {
     "concurrently": "^5.0.2"
-  },
-  "dependencies": {
-    "koa-mysql-session": "^0.0.2",
-    "koa-session-minimal": "^3.0.4"
   }
 }
