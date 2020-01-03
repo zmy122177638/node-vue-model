@@ -32,19 +32,14 @@
     </div>
     <van-button
       class="helper-item left"
-      @click="onUseComponent('modify')"
-      text="修改密码"
-    ></van-button>
-    <van-button
-      class="helper-item center"
       @click="onUseComponent('email')"
       text="注册账号"
     ></van-button>
-    <van-button
+    <!-- <van-button
       class="helper-item right"
       @click="onUseComponent('reset')"
       text="忘记密码"
-    ></van-button>
+    ></van-button> -->
   </section>
 </template>
 <script lang="ts">
@@ -89,10 +84,16 @@ export default class SignIn extends Vue {
       this.$toast("密码不能为空");
       return;
     }
-    api.accountSign({ account, password }).then(() => {
-      this.$toast("登录成功");
-      this.$router.replace({ name: "Home" });
-    });
+    this.isLoad = true;
+    api
+      .accountSign({ account, password })
+      .then(() => {
+        this.$toast("登录成功");
+        this.$router.replace({ name: "Home" });
+      })
+      .finally(() => {
+        this.isLoad = false;
+      });
   }
 }
 </script>

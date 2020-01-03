@@ -1,4 +1,4 @@
-const { poolQuery, connectQuery } = require('../index')
+const { poolQuery } = require('../index')
 
 class UserTable {
   /**
@@ -17,7 +17,7 @@ class UserTable {
       /** 手机注册 */
       sql = `INSERT INTO user(phone,password) VALUES('${params.phone}','${params.password}')`
     }
-    return connectQuery(sql)
+    return poolQuery(sql)
   }
 
   /**
@@ -28,7 +28,12 @@ class UserTable {
   queryUser(params){
     const queryParams = Object.entries(params).map(t => `${t[0]}='${t[1]}'`).join(' AND ');
     const sql = `SELECT * FROM user WHERE ${queryParams}`
-    return connectQuery(sql)
+    return poolQuery(sql)
+  }
+
+  updateUser(params) {
+    const sql = `UPDATE user SET password=${params.password} WHERE id=${params.id}`
+    return poolQuery(sql)
   }
 }
 

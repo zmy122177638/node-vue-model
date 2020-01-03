@@ -3,6 +3,7 @@
     <p>用户id: {{ userInfo.id }}</p>
     <p>手机号: {{ userInfo.phone }}</p>
     <p>邮箱: {{ userInfo.email || "暂无" }}</p>
+    <button @click="onModifyPassword">修改密码</button>
     <button @click="onLogout">退出登录</button>
   </div>
 </template>
@@ -15,6 +16,9 @@ import api from "../api";
 export default class Home extends Vue {
   private get userInfo() {
     return AccountMoudule.userInfo;
+  }
+  private onModifyPassword() {
+    this.$router.push({ name: "Login", query: { use: "modify" } });
   }
   private onLogout() {
     api.logout().then(() => {

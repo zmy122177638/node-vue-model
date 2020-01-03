@@ -3,47 +3,58 @@
     <h1 class="form-title">修改密码</h1>
     <van-cell-group>
       <van-field
-        v-model="formData.account"
-        left-icon="manager"
-        clearable
-        label-width="50"
-        label="账号"
-        placeholder="请输入登录账号"
-        error-message
-      />
-      <van-field
-        v-model="formData.password"
+        v-model="formData.oldPsd"
         left-icon="lock"
         clearable
         type="password"
-        label-width="50"
-        label="密码"
-        placeholder="请输入登录密码"
-        error-message
+        label-width="80"
+        label="旧密码"
+        placeholder="请输入旧密码"
+      />
+      <van-field
+        v-model="formData.newPsd"
+        left-icon="lock"
+        clearable
+        type="password"
+        label-width="80"
+        label="新密码"
+        placeholder="请输入新密码"
+      />
+      <van-field
+        v-model="formData.newPsdReg"
+        left-icon="lock"
+        clearable
+        type="password"
+        label-width="80"
+        label="确认密码"
+        placeholder="请再次输入新密码"
       />
     </van-cell-group>
     <div class="form-submit">
       <van-button
-        :loading="false"
+        :loading="loading"
         class="sign_btn"
         type="info"
         text="确认修改"
         loading-text="登录中..."
+        @click="submit"
       />
     </div>
     <van-button
       class="helper-item left"
-      @click="onUseComponent('sign')"
-      text="返回登录"
+      @click="$router.back()"
+      text="返回"
     ></van-button>
   </section>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Button, Field, CellGroup } from "vant";
-interface TformData {
-  account: string;
-  password: string;
+import api from "../../api";
+interface IFormData {
+  oldPsd: string;
+  newPsd: string;
+  newPsdReg: string;
 }
 @Component({
   components: {
@@ -54,19 +65,47 @@ interface TformData {
 })
 export default class ModifyPassword extends Vue {
   @Prop({ type: String }) public value!: string;
+  private loading: boolean = false;
   private get useComponent() {
     return this.value;
   }
   private set useComponent(val) {
     this.$emit("input", val);
   }
-  private formData: TformData = {
-    account: "",
-    password: ""
+  private formData: IFormData = {
+    oldPsd: "",
+    newPsd: "",
+    newPsdReg: ""
   };
 
   private onUseComponent(val: string) {
     this.useComponent = val;
+  }
+  private submit() {
+    const { oldPsd, newPsd, newPsdReg } = this.formData as IFormData;
+    if (!oldPsd) {
+      this.$toast("旧密码不能为空");
+      return;
+    } else if (!newPsd) {
+      this.$toast("新密码不能为空");
+      return;
+    } else if (!newPsdReg) {
+      this.$toast("确认密码不能为空");
+      return;
+    } else if (newPsd !== newPsdReg) {
+      this.$toast("两次密码不一致");
+      return;
+    }
+    this.loading = true;
+    api
+      .modifyUserPsd({ oldPsd, newPsd })
+      .then((res: any) => {
+        this.$toast("修改成功");
+        this.$router.back();
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 }
 </script>

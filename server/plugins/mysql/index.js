@@ -54,7 +54,7 @@ async function createAllTables() {
 
     for (let [i, shell] of sqlShellList.entries()) {
       if (shell.trim()) {
-        let result = await connectQuery(shell)
+        let result = await poolQuery(shell)
         if (result.serverStatus * 1 === 2) {
           eventLog(null, key, i)
         } else {

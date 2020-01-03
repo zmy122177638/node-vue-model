@@ -50,7 +50,7 @@ router.beforeEach((to, from, next) => {
       AccountMoudule.setUserInfo(userInfo)
       next()
     }).catch(() => {
-      router.push({name: 'Login'})
+      next({name: 'Login'})
     })
   }
 })

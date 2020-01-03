@@ -27,6 +27,18 @@ export function getUserInfo(params = {}) {
   })
 }
 
+/** 修改密码 */
+export function modifyUserPsd(data: {
+  oldPsd: string
+  newPsd: string
+}) {
+  return request({
+    url: "api/user/modifyPassword",
+    method: 'post',
+    data
+  })
+}
+
 /** 退出登录 */
 export function logout() {
   return request({

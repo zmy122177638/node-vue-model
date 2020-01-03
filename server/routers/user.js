@@ -1,7 +1,8 @@
 const Router = require('koa-router');
 const router = new Router({ prefix: '/user'})
-const SQLUser = require('../plugins/mysql/modules/user.js')
-const { isQuerySuccess } = require('../helper/utils.js')
+const SQLUser = require('../plugins/mysql/modules/user')
+const { isQuerySuccess } = require('../helper/utils')
+const { emailRule, phoneRule } = require('../helper/validate')
 
 /** 获取用户信息 */
 router.get('/info', async (ctx) => {
@@ -21,18 +22,14 @@ router.get('/info', async (ctx) => {
   }
 })
 
-/**
- * 账号登录
- */
+/** 账号登录 */
 router.post('/login', async(ctx) => {
   const account = ctx.request.body.account;
   const password = ctx.request.body.password;
-  const phoneReg = /^1[3456789][0-9]{9}$/
-  const emailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
   let params = {}
-  if (phoneReg.test(account)) {
+  if (phoneRule.test(account)) {
     params = { phone: account }
-  } else if(emailReg.test(account)){
+  } else if(emailRule.test(account)){
     params = { email: account }
   } else {
     ctx.throw(400, '账号格式错误')
@@ -41,10 +38,8 @@ router.post('/login', async(ctx) => {
   if(isQuerySuccess(result)){
     const loginInfo = result[0]
     if(loginInfo.password === password) {
-      ctx.session = {
-        id: loginInfo.id,
-        userName: loginInfo.userName
-      }
+      ctx.session.id = loginInfo.id,
+      ctx.session.userName = loginInfo.userName
       ctx.body = {
         success: true,
         payload: loginInfo
@@ -57,9 +52,7 @@ router.post('/login', async(ctx) => {
   }
 })
 
-/**
- *  注册
- */
+/** 注册 */
 router.post('/register', async(ctx, next) => {
   const result = await SQLUser.queryUser(ctx.request.body)
   if(isQuerySuccess(result)) {
@@ -74,9 +67,33 @@ router.post('/register', async(ctx, next) => {
   }
 })
 
+/** 修改密码 */
+router.post('/modifyPassword', async(ctx, next) => {
+  const oldPsd = ctx.request.body.oldPsd;
+  const newPsd = ctx.request.body.newPsd;
+  const result = await SQLUser.queryUser({id: ctx.session.id})
+  if(isQuerySuccess(result)){
+    const loginInfo = result[0]
+    if(loginInfo.password === oldPsd) {
+      if(oldPsd === newPsd) {
+        ctx.throw(400, '新密码和旧密码一致')
+      } else {
+        await SQLUser.updateUser({ password:newPsd,id: ctx.session.id })
+        ctx.session = null
+        ctx.body = {
+          payload: [],
+          success: true
+        }
+      }
+    } else {
+      ctx.throw(400, '旧密码错误')
+    } 
+  }
+})
+
 /** 退出登录 */
 router.all('/logout', async(ctx, next) => {
-  ctx.session = {}
+  ctx.session = null
   ctx.body = {
     payload: [],
     success: true
