@@ -8,7 +8,7 @@
   </section>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { Button, Field, CellGroup } from "vant";
 import EmailRegister from "../components/login/EmailRegister.vue";
 import PhoneRegister from "../components/login/PhoneRegister.vue";
@@ -28,8 +28,10 @@ import SignIn from "../components/login/SignIn.vue";
 export default class Login extends Vue {
   /** 默认用户登录 email 邮箱注册 phone 手机注册 reset 忘记密码 modify 修改密码 */
   private useComponent: string = "sign";
-  public created() {
-    const { use } = this.$route.query as any;
+
+  @Watch("$route.query", { immediate: true })
+  watchQueryChange(now: any) {
+    const { use } = now;
     if (use) {
       this.useComponent = use;
     }

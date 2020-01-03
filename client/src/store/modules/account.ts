@@ -1,8 +1,10 @@
 import { VuexModule, Module, MutationAction, Mutation, Action, getModule } from 'vuex-module-decorators'
 import store from "../index"
 import api from '@/api'
-import { UserInfo } from '@/ts/modules/userInfo'
-
+/** 用户信息 */
+export class UserInfo {
+  id: string|null = null
+}
 @Module({ dynamic: true, store, name: 'account' })
 class Account extends VuexModule implements IAccountModule{
   public userInfo: UserInfo = new UserInfo()

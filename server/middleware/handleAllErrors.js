@@ -8,7 +8,7 @@ module.exports = () => {
         ctx.body = {
           error: {
             code: error.code || error.status,
-            message: error.message || errorCodeMsg[error.code]
+            message: errorCodeMsg[error.code] || error.message
           },
           success: false
         }

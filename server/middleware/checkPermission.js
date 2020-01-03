@@ -7,7 +7,7 @@ module.exports = () => {
       '/zxd/zh/v1/api/user/register',
     ]
     if (!ctx.session.id && !filterRoutes.some((path) => ctx.path === path)) {
-      ctx.throw(400,{code: 3002, message: '登录状态失效'})
+      ctx.throw(400,{code: 3002})
     } else {
       /** 重写cookie设置 */
       ctx.cookies.set('SESSION_ID', ctx.cookies.get('SESSION_ID'),{maxAge: config.maxAge})

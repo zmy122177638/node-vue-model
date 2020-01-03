@@ -15,10 +15,10 @@ router.get('/info', async (ctx) => {
       }
     } else {
       ctx.session = null
-      ctx.throw(400,{code: 3002, message: '找不到用户'})
+      ctx.throw(400,{message: '找不到用户'})
     }
   } else {
-    ctx.throw(400,{code: 3002, message: '请先登录'})
+    ctx.throw(400,{message: '请先登录'})
   }
 })
 

@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError, AxiosInstance } from "axios";
 import { Toast } from "vant";
+import router from '@/router';
 
 // 状态码错误信息
 const codeMessage: any = {
@@ -72,6 +73,9 @@ request.interceptors.response.use(
     const { success, payload, error } = res.data;
     if (!success) {
       setTimeout(() => {
+        if (error && error.code === 3002) {
+          router.push({ name: 'Login', query: { use: 'sign' } })
+        } 
         Toast({
           message: `${(error && error.message) || "服务器繁忙"}`,
           duration: 2000
