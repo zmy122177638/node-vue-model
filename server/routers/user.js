@@ -54,7 +54,19 @@ router.post('/login', async(ctx) => {
 
 /** 注册 */
 router.post('/register', async(ctx, next) => {
-  const result = await SQLUser.queryUser(ctx.request.body)
+  let params = {};
+  if (ctx.request.body.email) {
+    params = {
+      email: ctx.request.body.email,
+      password: ctx.request.body.password
+    };
+  } else {
+    params = {
+      phone: ctx.request.body.phone,
+      password: ctx.request.body.password
+    };
+  }
+  const result = await SQLUser.queryUser(params)
   if(isQuerySuccess(result)) {
     const title = ctx.request.body.phone ? '手机号' : '邮箱'
     ctx.throw(400, `该${title}已注册`)
