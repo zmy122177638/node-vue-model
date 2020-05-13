@@ -25,39 +25,41 @@ const codeMessage: any = {
   503: "服务不可用，服务器暂时过载或维护。",
   504: "网关超时。"
 };
+
+/** 设置公共参数 */
+function setCommonParams(config: AxiosRequestConfig, common: object) {
+  let { method, data = {}, params = {} } = config;
+  if (String(method).toUpperCase() === "GET") {
+    if (!params.orgId) {
+      config.params = { ...params, ...common };
+    }
+  } else {
+    if (Object.prototype.toString.call(data) === "[object FormData]") {
+      Object.entries(common).forEach(([key, val]) => {
+        data.append(key, val);
+      })
+    } else {
+      if (!data.orgId) {
+        config.data = { ...data, ...common };
+      }
+    }
+  }
+}
+
 // const CancelToken = axios.CancelToken
 // let axiosCancelPromiseMap: Map<any, any> = new Map()
 const request: AxiosInstance = axios.create({
   timeout: 10000,
   withCredentials: true
 });
-
-/** 设置公共参数 */
-function setPublicParams(config: AxiosRequestConfig) {
-  let { method, data, params } = config;
-  if (!data) data = {};
-  if (!params) params = {};
-  if (String(method).toUpperCase() === "GET") {
-    if (!params.orgId) {
-      config.params = { ...params, orgId: 100 };
-    }
-  } else {
-    if (Object.prototype.toString.call(data) === "[object FormData]") {
-      if (!data.get("orgId")) {
-        data.append("orgId", 100);
-      }
-    } else {
-      if (!data.orgId) {
-        config.data = { ...data, orgId: 100 };
-      }
-    }
-  }
+/** 发起请求追加参数 */
+const commonParams = {
+  orgId: 100 /** 渠道ID */
 }
-
 // 发起请求前
 request.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    setPublicParams(config);
+    setCommonParams(config, commonParams);
     // const cancelMethod = axiosCancelPromiseMap.get(config.url)
     // if (cancelMethod) {
     //   cancelMethod("repeat request")
