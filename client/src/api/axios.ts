@@ -37,7 +37,7 @@ function setCommonParams(config: AxiosRequestConfig, common: object) {
     if (Object.prototype.toString.call(data) === "[object FormData]") {
       Object.entries(common).forEach(([key, val]) => {
         data.append(key, val);
-      })
+      });
     } else {
       if (!data.orgId) {
         config.data = { ...data, ...common };
@@ -46,8 +46,8 @@ function setCommonParams(config: AxiosRequestConfig, common: object) {
   }
 }
 
-// const CancelToken = axios.CancelToken
-// let axiosCancelPromiseMap: Map<any, any> = new Map()
+const CancelToken = axios.CancelToken;
+let axiosCancelPromiseMap: Map<any, any> = new Map();
 const request: AxiosInstance = axios.create({
   timeout: 10000,
   withCredentials: true
@@ -55,19 +55,21 @@ const request: AxiosInstance = axios.create({
 /** 发起请求追加参数 */
 const commonParams = {
   orgId: 100 /** 渠道ID */
-}
+};
 // 发起请求前
 request.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     setCommonParams(config, commonParams);
-    // const cancelMethod = axiosCancelPromiseMap.get(config.url)
-    // if (cancelMethod) {
-    //   cancelMethod("repeat request")
-    //   axiosCancelPromiseMap.delete(config.url)
-    // }
-    // config.cancelToken = new CancelToken(function executor(cancelMethod: Function) {
-    //   axiosCancelPromiseMap.set(config.url, cancelMethod)
-    // })
+    const cancelMethod = axiosCancelPromiseMap.get(config.url);
+    if (cancelMethod) {
+      cancelMethod("repeat request");
+      axiosCancelPromiseMap.delete(config.url);
+    }
+    config.cancelToken = new CancelToken(function executor(
+      cancelMethod: Function
+    ) {
+      axiosCancelPromiseMap.set(config.url, cancelMethod);
+    });
     return config;
   },
   (error: AxiosError) => {
