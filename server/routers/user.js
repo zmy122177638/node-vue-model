@@ -58,12 +58,10 @@ router.post('/register', async(ctx, next) => {
   if (ctx.request.body.email) {
     params = {
       email: ctx.request.body.email,
-      password: ctx.request.body.password
     };
   } else {
     params = {
       phone: ctx.request.body.phone,
-      password: ctx.request.body.password
     };
   }
   const result = await SQLUser.queryUser(params)
