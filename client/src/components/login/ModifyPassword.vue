@@ -101,7 +101,7 @@ export default class ModifyPassword extends Vue {
       .modifyUserPsd({ oldPsd, newPsd })
       .then((res: any) => {
         this.$toast("修改成功");
-        this.$router.back();
+        this.$router.push({ name: "Login", query: { use: "sign" } });
       })
       .finally(() => {
         this.loading = false;

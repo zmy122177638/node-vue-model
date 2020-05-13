@@ -1,6 +1,11 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError, AxiosInstance } from "axios";
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+  AxiosInstance
+} from "axios";
 import { Toast } from "vant";
-import router from '@/router';
+import router from "@/router";
 
 // 状态码错误信息
 const codeMessage: any = {
@@ -24,26 +29,26 @@ const codeMessage: any = {
 // let axiosCancelPromiseMap: Map<any, any> = new Map()
 const request: AxiosInstance = axios.create({
   timeout: 10000,
-  withCredentials: true,
-})
+  withCredentials: true
+});
 
 /** 设置公共参数 */
 function setPublicParams(config: AxiosRequestConfig) {
-  let { method, data, params } = config
-  if (!data) data = {}
-  if (!params) params = {}
-  if (String(method).toUpperCase() === 'GET') {
+  let { method, data, params } = config;
+  if (!data) data = {};
+  if (!params) params = {};
+  if (String(method).toUpperCase() === "GET") {
     if (!params.orgId) {
-      config.params = { ...params, orgId: 100 }
+      config.params = { ...params, orgId: 100 };
     }
   } else {
-    if (Object.prototype.toString.call(data) === '[object FormData]') {
-      if (!data.get('orgId')) {
-        data.append('orgId', 100)
+    if (Object.prototype.toString.call(data) === "[object FormData]") {
+      if (!data.get("orgId")) {
+        data.append("orgId", 100);
       }
     } else {
       if (!data.orgId) {
-        config.data = { ...data, orgId: 100 }
+        config.data = { ...data, orgId: 100 };
       }
     }
   }
@@ -74,8 +79,8 @@ request.interceptors.response.use(
     if (!success) {
       setTimeout(() => {
         if (error && error.code === 3002) {
-          router.push({ name: 'Login', query: { use: 'sign' } })
-        } 
+          router.push({ name: "Login", query: { use: "sign" } });
+        }
         Toast({
           message: `${(error && error.message) || "服务器繁忙"}`,
           duration: 2000

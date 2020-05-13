@@ -1,9 +1,9 @@
 import Vue from "vue";
 import Router, { Route, RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
-import { AccountMoudule } from '@/store/modules/account';
-import { _deepIterator } from '@/common/utils';
-import api from '@/api';
+import { AccountMoudule } from "@/store/modules/account";
+import { _deepIterator } from "@/common/utils";
+import api from "@/api";
 
 Vue.use(Router);
 
@@ -23,7 +23,8 @@ const router = new Router({
     {
       path: "/login",
       name: "Login",
-      component: () => import(/* webpackChunkName: "Login" */ "../views/Login.vue"),
+      component: () =>
+        import(/* webpackChunkName: "Login" */ "../views/Login.vue"),
       meta: {
         isNotNeedLogin: true
       }
@@ -41,18 +42,29 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  const routes = (router as Router as any).options.routes as RouteConfig[]
-  let getNotNeedLoginRouteNames = _deepIterator(routes, (item: RouteConfig) => item.children, (item: RouteConfig) => item.meta && item.meta.isNotNeedLogin ? item.name : undefined)
-  if (AccountMoudule.isLogin || getNotNeedLoginRouteNames.some((routeName: string) => routeName === to.name)) {
-    next()
+  const routes = ((router as Router) as any).options.routes as RouteConfig[];
+  let getNotNeedLoginRouteNames = _deepIterator(
+    routes,
+    (item: RouteConfig) => item.children,
+    (item: RouteConfig) =>
+      item.meta && item.meta.isNotNeedLogin ? item.name : undefined
+  );
+  if (
+    AccountMoudule.isLogin ||
+    getNotNeedLoginRouteNames.some((routeName: string) => routeName === to.name)
+  ) {
+    next();
   } else {
-    api.getUserInfo().then((userInfo: any) => {
-      AccountMoudule.setUserInfo(userInfo)
-      next()
-    }).catch(() => {
-      next({name: 'Login'})
-    })
+    api
+      .getUserInfo()
+      .then((userInfo: any) => {
+        AccountMoudule.setUserInfo(userInfo);
+        next();
+      })
+      .catch(() => {
+        next({ name: "Login" });
+      });
   }
-})
+});
 
-export default router
+export default router;

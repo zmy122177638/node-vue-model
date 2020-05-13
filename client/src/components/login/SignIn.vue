@@ -46,6 +46,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Button, Field, CellGroup } from "vant";
 import api from "../../api/index";
+import { AccountMoudule } from "../../store/modules/account";
 interface TformData {
   account: string;
   password: string;
@@ -87,9 +88,10 @@ export default class SignIn extends Vue {
     this.isLoad = true;
     api
       .accountSign({ account, password })
-      .then(() => {
+      .then((userInfo: any) => {
+        AccountMoudule.setUserInfo(userInfo);
         this.$toast("登录成功");
-        this.$router.replace({ name: "Home" });
+        this.$router.push({ name: "Home" });
       })
       .finally(() => {
         this.isLoad = false;

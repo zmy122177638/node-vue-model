@@ -26,7 +26,7 @@ import SignIn from "../components/login/SignIn.vue";
   }
 })
 export default class Login extends Vue {
-  /** 默认用户登录 email 邮箱注册 phone 手机注册 reset 忘记密码 modify 修改密码 */
+  /** 默认 sign 用户登录 email 邮箱注册 phone 手机注册 reset 忘记密码 modify 修改密码 */
   private useComponent: string = "sign";
 
   @Watch("$route.query", { immediate: true })
