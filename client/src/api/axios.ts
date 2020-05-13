@@ -30,18 +30,14 @@ const codeMessage: any = {
 function setCommonParams(config: AxiosRequestConfig, common: object) {
   let { method, data = {}, params = {} } = config;
   if (String(method).toUpperCase() === "GET") {
-    if (!params.orgId) {
-      config.params = { ...params, ...common };
-    }
+    config.params = { ...params, ...common };
   } else {
     if (Object.prototype.toString.call(data) === "[object FormData]") {
       Object.entries(common).forEach(([key, val]) => {
         data.append(key, val);
       });
     } else {
-      if (!data.orgId) {
-        config.data = { ...data, ...common };
-      }
+      config.data = { ...data, ...common };
     }
   }
 }
