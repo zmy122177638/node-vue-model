@@ -2,7 +2,14 @@ const { ERROR_CODE_MESSAGE } = require('../constants/constants')
 module.exports = () => {
   return async function(ctx,next){
     /** 全局共用错误 更多使用查看 https://github.com/jshttp/http-errors */
-    global.throw = ctx.throw
+    if (!global.throw) global.throw = ctx.throw
+    /** body响应返回函数 */
+    ctx.success = function (data) {
+      return {
+        payload: data || [],
+        success: true
+      }
+    }
     try {
       await next()
     } catch (error) {

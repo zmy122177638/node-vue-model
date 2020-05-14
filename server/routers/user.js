@@ -8,10 +8,7 @@ router.get('/info', async (ctx) => {
   if (ctx.session.id) {
     const userInfo = await UserModel.getInfo(ctx.session.id)
     if (userInfo) {
-      ctx.body = {
-        success: true,
-        payload: userInfo
-      }
+      ctx.body = ctx.success(userInfo)
     } else {
       ctx.session = null
       ctx.throw(400,{message: '找不到用户'})
@@ -39,10 +36,7 @@ router.post('/login', async(ctx) => {
     if(checkPwd) {
       ctx.session.id = userInfo.id,
       ctx.session.userName = userInfo.userName
-      ctx.body = {
-        success: true,
-        payload: userInfo
-      }
+      ctx.body = ctx.success(userInfo)
     } else {
       ctx.throw(400, '登录密码错误')
     }
@@ -55,10 +49,7 @@ router.post('/login', async(ctx) => {
 router.post('/register', async(ctx) => {
   const body = ctx.request.body;
   const userInfo = await UserModel.create(body)
-  ctx.body = {
-    payload: userInfo,
-    success: true
-  }
+  ctx.body = ctx.success(userInfo)
 })
 
 /** 修改密码 */
@@ -67,20 +58,13 @@ router.post('/modifyPassword', async(ctx) => {
   const newPsd = ctx.request.body.newPsd;
   await UserModel.modifyPassword(ctx.session.id, oldPsd, newPsd)
   ctx.session = null
-  ctx.body = {
-    payload: [],
-    success: true
-  }
-
+  ctx.body = ctx.success()
 })
 
 /** 退出登录 */
 router.all('/logout', async(ctx, next) => {
   ctx.session = null
-  ctx.body = {
-    payload: [],
-    success: true
-  }
+  ctx.body = ctx.success()
 })
 
 
