@@ -1,14 +1,17 @@
-const errorCodeMsg = require('../helper/errorCodeMsg.js')
+const { ERROR_CODE_MESSAGE } = require('../constants/constants')
 module.exports = () => {
   return async function(ctx,next){
+    /** 全局共用错误 更多使用查看 https://github.com/jshttp/http-errors */
+    global.throw = ctx.throw
     try {
       await next()
     } catch (error) {
-      if (error.status === 400) {
+      /** 判断错误是否发送至客户端 */
+      if (error.expose) {
         ctx.body = {
           error: {
             code: error.code || error.status,
-            message: errorCodeMsg[error.code] || error.message
+            message: ERROR_CODE_MESSAGE[error.code] || error.message || '服务错误'
           },
           success: false
         }

@@ -4,18 +4,14 @@ const path = require('path')
 const static = require('koa-static')
 const bodyParser = require('koa-bodyparser')
 
-const { createAllTables } = require('./plugins/mysql/index')
 const sessionPlugin = require('./plugins/session/index')
 
 const setHttpHeaders = require('./middleware/setHttpHeaders')
-const handleAllErrors = require('./middleware/handleAllErrors')
+const exception = require('./middleware/exception')
 const checkPermission = require('./middleware/checkPermission')
 
 const router = require('./routers/index')
 const config = require('./config')
-
-/** 初始化表 */
-createAllTables()
 
 /** 设置静态资源服务 */
 app.use(static(path.join(__dirname, config.staticPath)))
@@ -25,7 +21,7 @@ app.use(sessionPlugin)
 
 /** middleware */
 app.use(setHttpHeaders())
-app.use(handleAllErrors())
+app.use(exception())
 app.use(bodyParser())
 app.use(checkPermission())
 
