@@ -24,18 +24,6 @@ const sequelize = new Sequelize(database, user, password, {
     deletedAt: 'deleted_at',
     // 把驼峰命名转换为下划线
     underscored: true,
-    scopes: {
-      bh: {
-        attributes: {
-          exclude: ['password', 'updated_at', 'deleted_at', 'created_at']
-        }
-      },
-      iv: {
-        attributes: {
-          exclude: ['content', 'password', 'updated_at', 'deleted_at']
-        }
-      }
-    }
   }
 })
 // 创建模型

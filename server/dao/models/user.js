@@ -1,4 +1,5 @@
 const { User } = require('../../plugins/sequelize/models/user')
+const { Op } = require('sequelize')
 const bcrypt = require('bcryptjs')
 class UserModel {
   /**
@@ -48,12 +49,26 @@ class UserModel {
     }
   }
   /**
+   * @description 通过手机邮箱登陆
+   * @param {*} account 账号
+   */
+  static async checkPhoneEmail(account) {
+    return User.findOne({
+      where: {
+        [Op.or]: [
+          { email: account },
+          { phone: account }
+        ]
+      }
+    })
+  }
+  /**
    * @description: 查询用户 
    * @param {Object} params 用户数据
    * @return  用户信息 OR null
    */
   static queryOne(params) {
-    return User.findOne({where: params})
+    return User.findOne({params})
   }
 }
 

@@ -1,3 +1,10 @@
+/*
+ * @Description: 
+ * @Author: Anles
+ * @Date: 2019-12-26 15:46:29
+ * @LastEditors: Anles
+ * @LastEditTime: 2020-05-15 09:59:53
+ */
 module.exports = {
   host: 'localhost',
   /** 端口号 */
@@ -12,6 +19,13 @@ module.exports = {
     password: '123456',
     database: 'mydb'
   },
-  /** sessionID过期时间设置 */
-  maxAge: 1000 * 60 * 30
+  /** redis 配置 */
+  redis: {
+    port: 6379,
+    host: '127.0.0.1',
+  },
+  /** session 配置 */
+  session: {
+    maxAge: 1000 * 60 * 30
+  }
 }

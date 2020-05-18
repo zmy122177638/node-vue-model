@@ -1,17 +1,27 @@
 const Router = require('koa-router');
 const router = new Router({ prefix: '/user'})
 const bcrypt = require('bcryptjs')
-const { emailRule, phoneRule } = require('../helper/validate')
-const { UserModel } = require('../database/index')
+const { UserModel } = require('../dao/index')
+const { getRedis, setRedis } = require('../plugins/redis/index')
+const Validator = require('../validator/validator')
+const UserValidator = require('../validator/models/user')
+
 /** 获取用户信息 */
 router.get('/info', async (ctx) => {
   if (ctx.session.id) {
     const userInfo = await UserModel.getInfo(ctx.session.id)
-    if (userInfo) {
-      ctx.body = ctx.success(userInfo)
+    const cacheData = await getRedis(ctx.session.id)
+    if (cacheData) {
+      console.log('redis用户缓存')
+      ctx.body = ctx.success(cacheData)
     } else {
-      ctx.session = null
-      ctx.throw(400,{message: '找不到用户'})
+      if (userInfo) {
+        setRedis(ctx.session.id, userInfo, 3)
+        ctx.body = ctx.success(userInfo)
+      } else {
+        ctx.session = null
+        ctx.throw(400,{message: '找不到用户'})
+      }
     }
   } else {
     ctx.throw(400,{message: '请先登录'})
@@ -20,17 +30,14 @@ router.get('/info', async (ctx) => {
 
 /** 账号登录 */
 router.post('/login', async(ctx) => {
+  const { success, message } = await new Validator(UserValidator.regLogin).validate(ctx.request.body)
+  if (!success) {
+    ctx.throw(400,message)
+    return
+  }
   const account = ctx.request.body.account;
   const password = ctx.request.body.password;
-  let params = {}
-  if (phoneRule.test(account)) {
-    params = { phone: account }
-  } else if(emailRule.test(account)){
-    params = { email: account }
-  } else {
-    ctx.throw(400, '账号格式错误')
-  }
-  const userInfo = await UserModel.queryOne(params)
+  const userInfo = await UserModel.checkPhoneEmail(account)
   if(userInfo){
     const checkPwd = bcrypt.compareSync(password, userInfo.password)
     if(checkPwd) {
@@ -47,6 +54,11 @@ router.post('/login', async(ctx) => {
 
 /** 注册 */
 router.post('/register', async(ctx) => {
+  const { success, message } = await new Validator(UserValidator.regLogin).validate(ctx.request.body)
+  if (!success) {
+    ctx.throw(400, message)
+    return
+  }
   const body = ctx.request.body;
   const userInfo = await UserModel.create(body)
   ctx.body = ctx.success(userInfo)

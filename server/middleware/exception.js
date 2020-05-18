@@ -18,7 +18,7 @@ module.exports = () => {
         ctx.body = {
           error: {
             code: error.code || error.status,
-            message: ERROR_CODE_MESSAGE[error.code] || error.message || '服务错误'
+            message: ERROR_CODE_MESSAGE[error.code] || error.message || '服务器错误'
           },
           success: false
         }
