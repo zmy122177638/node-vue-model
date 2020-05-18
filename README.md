@@ -7,8 +7,9 @@
 如不安装可修改`client` AND `server`目录下package.json的scripts命令，将`cnpm install`修改为`npm install`即可
 
 ### 本地运行
- - 需要安装mysql
- - 需要安装node.js
+ - 需要安装[mysql](https://www.mysql.com/)
+ - 需要安装[redis](https://www.runoob.com/redis/redis-install.html)
+ - 需要安装[node.js](http://nodejs.cn/)
  
 #### 启动客户端并自动安装依赖
 ```
