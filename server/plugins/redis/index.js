@@ -1,14 +1,3 @@
-/*
- * @Description: 
- * @Author: Anles
- * @Date: 2020-05-15 09:41:33
- * @LastEditors: Anles
- * @LastEditTime: 2020-05-15 09:52:07
- */
-/**
- * @description 链接redis
- * @author 梁凤波
- */
 const redis = require('redis')
 const { port, host } = require('../../config').redis
 

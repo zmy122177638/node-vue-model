@@ -3,7 +3,7 @@
  * @Author: Anles
  * @Date: 2020-05-15 14:45:46
  * @LastEditors: Anles
- * @LastEditTime: 2020-05-18 15:15:16
+ * @LastEditTime: 2020-05-18 15:26:29
  */ 
 
 const Validate = require('./validate')
@@ -74,7 +74,6 @@ class Validator extends Validate{
       }
     }
   }
-  
 }
 
 module.exports = Validator
